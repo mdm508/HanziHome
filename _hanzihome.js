@@ -193,10 +193,8 @@ function getHanziField() {
         return getClozeValue();
     } else {
         var dataValue = tryToGetData();
-        console.error("No valid Hanzi field found!");
-        console.error("Card must have a valid cloze or 'data' attribute in the hanzihome div.");
+        return dataValue;
     }
-    return null; // Return null explicitly
 }
 
 // Fetch JSON and process Hanzi characters
