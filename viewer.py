@@ -4,25 +4,29 @@ from PyQt6.QtWidgets import (
     QLineEdit, QPushButton, QTableWidget, QTableWidgetItem, QSizePolicy
 )
 from PyQt6.QtCore import Qt
-from aqt import mw
-from aqt.operations import QueryOp
-
 from .dbcontroller import DatabaseController
 
 class HanziViewer(QWidget):
+    window_count = 0
     def __init__(self, search_char:str, db: DatabaseController, parent=None):
         super().__init__(parent)
-        self.data = None
+        HanziViewer.window_count += 1
         self.search_char = search_char
         self.con = db
-        self.setWindowTitle("Hanzi Viewer")
         self.setFixedSize(600, 420)  # Increased window height
-        self.fetch_data()
+        self.data = self.fetch_data()
         self.init_ui()
     # Initialize UI Components
 
-    def fetch_data(self):
-        self.data = self.con.fetch_from_json(self.search_char)
+    # default to search character obtained from user clicking on context menu
+    # if char is present search using that
+    def fetch_data(self, char=None):
+        if char:
+            search_char = char
+        else:
+            search_char = self.search_char
+
+        return self.con.fetch_from_json(search_char)
 
     def init_ui(self):
         layout = QVBoxLayout(self)
@@ -41,12 +45,14 @@ class HanziViewer(QWidget):
             # Buttons Section
             layout.addLayout(self._create_buttons_section())
             self.setLayout(layout)
+            self.setWindowTitle(f"Win {HanziViewer.window_count} {self.search_char}")
         else:
             # Show 'No Results' label if no data is fetched
             no_results_label = QLabel("No results found.")
             no_results_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             no_results_label.setStyleSheet("font-size: 16pt; color: red;")
             layout.addWidget(no_results_label)
+            self.setWindowTitle(f"Win {HanziViewer.window_count} No Results for {self.search_char}")
 
     # Keyword Section
     def _create_keyword_section(self):
@@ -101,23 +107,66 @@ class HanziViewer(QWidget):
         zhuyin_display.setStyleSheet("font-size: 14pt;")
         return zhuyin_display
 
+    # Setup widget with a horizontal layout
+    def _create_horizontal_layout_widget(self):
+        hlayout = QHBoxLayout()
+        hlayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # Create a container widget for the layout
+        widget = QWidget()
+        widget.setLayout(hlayout)  # Set the layout on the widget
+        return widget
+
+
     def _create_info_layout(self):
         info_layout = QVBoxLayout()
         info_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        # Decomposition
-        decomp_label = QLabel(f"Decomposition: {self.data.get('decomposition', '')}")
-        decomp_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        decomp_label.setStyleSheet("font-size: 14pt;")
-        info_layout.addWidget(decomp_label)
-
-        # Radical
-        radical_label = QLabel(f"Radical: {self.data.get('radical', '')}")
-        radical_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        radical_label.setStyleSheet("font-size: 14pt;")
-        info_layout.addWidget(radical_label)
+        info_layout.addWidget(self._create_radical_layout())
+        info_layout.addWidget(self._create_decomposition_layout())
 
         return info_layout
+
+    # Makes a searchable radical
+    def _create_radical_layout(self):
+        radical_widget = self._create_horizontal_layout_widget()
+        radical = self.data.get('radical', '')
+        radical_label = QLabel(f"Radical: {radical}")
+        self._make_searchable_label(radical, radical_label)
+        radical_widget.layout().addWidget(radical_label)
+        return radical_widget
+
+    # makes searchable decomposition labels
+    def _create_decomposition_layout(self):
+        decomp_widget = self._create_horizontal_layout_widget()
+        # Process decomposition characters
+        decomposition = self.data.get("decomposition", "")
+        for char in decomposition:
+            # Only process Chinese characters
+            decomp_label = self._make_searchable_label(char)
+            decomp_widget.layout().addWidget(decomp_label)
+        # Return the widget containing the layout
+        return decomp_widget
+
+    # return a searchable label for the give character.
+    #  ptionally pass in their own label
+    # if not one is created for you.
+    def _make_searchable_label(self, char, label=None):
+        if not label:
+            label = QLabel(char)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        label.setStyleSheet("font-size: 14pt")
+        if self._in_db(char):
+            label.setStyleSheet("font-size: 14pt; color: blue;")
+            label.setCursor(Qt.CursorShape.PointingHandCursor)
+            label.mousePressEvent = lambda event, c=char: self._open_new_viewer(c)
+        return label
+    # true if character data exists
+    def _in_db(self,char):
+        response = self.fetch_data(char)
+        return bool(response)
+
+    def _open_new_viewer(self, char):
+        new_viewer = HanziViewer(char, self.con)
+        new_viewer.show()
 
     # Table Section
     def _create_table_section(self):
