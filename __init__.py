@@ -1,8 +1,6 @@
 from aqt import gui_hooks
 from aqt.qt import *
 from bs4 import BeautifulSoup
-import shutil
-from pathlib import Path
 from aqt import mw
 from aqt.webview import AnkiWebView
 from aqt.utils import showInfo

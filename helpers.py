@@ -1,9 +1,16 @@
 import shutil
+import os
 from pathlib import Path
 
 from aqt import mw
 from aqt.utils import showInfo
-from .mypaths import Constants
+
+try:
+    # Anki imports (for deployment inside Anki)
+    from .mypaths import Constants
+except ImportError:
+    from mypaths import Constants
+
 
 
 def _copy_file_to_media(source: Path, filename: str):
@@ -12,10 +19,16 @@ def _copy_file_to_media(source: Path, filename: str):
     Args:
         source (Path): The source file path.
         filename (str): The name of the file in the destination folder.
+    Note: To get anki mobile to sync these media files we need to delete them.
     """
     try:
         # Define destination path
         dest = Path(mw.col.media.dir()) / filename
+        # Check if the file exists
+        if os.path.exists(dest):
+            # Delete the file
+            os.remove(dest)
+            print(f"File '{dest}' has been deleted successfully.")
         # Copy the file
         shutil.copy2(source, dest)
         showInfo(f"Copied {filename} to: {dest}")

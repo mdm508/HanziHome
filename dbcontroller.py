@@ -1,7 +1,26 @@
 import json
 import sqlite3
-from .helpers import copy_json_to_media_folder
-from .mypaths import Constants
+
+
+import os
+import sys
+
+# Adjust sys.path for local testing
+if __name__ == "__main__":
+    sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+try:
+    # Anki imports (for deployment inside Anki)
+    from .helpers import copy_json_to_media_folder
+    from .mypaths import Constants
+except ImportError:
+    # Absolute imports (for local testing)
+    from helpers import copy_json_to_media_folder
+    from mypaths import Constants
+
+
+
+
 
 class DatabaseController:
     def __init__(self):
@@ -147,7 +166,8 @@ class DatabaseController:
 
 # Example usage
 if __name__ == '__main__':
+
     db = DatabaseController()
-    db.export_to_json()
     print(db.fetch_character('二'))
+    print(db.fetch_from_json('二'))
     db.close()

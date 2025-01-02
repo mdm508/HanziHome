@@ -34,6 +34,7 @@ class HanziViewer(QWidget):
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
         if data:
+            print(data)
             # Set background color
             self.setStyleSheet("background-color: white;")
             # Keyword Section
