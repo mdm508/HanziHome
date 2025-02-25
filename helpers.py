@@ -45,8 +45,15 @@ def copy_resources_to_media_folder():
     Copies required JSON and JavaScript files to collections.media folder
     for mobile compatibility.
     """
-    from .mypaths import Constants
     # Copy JSON file
     copy_json_to_media_folder()
     # Copy JavaScript file
     _copy_file_to_media(Constants.JS_PATH, Constants.JS_FILENAME)
+
+def config_exists():
+    """
+    Checks if the config file exists.
+    Returns:
+        bool: True if the config and javascript exist
+    """
+    return os.path.exists(Constants.JSON_PATH) and os.path.exists(Constants.JS_PATH)
