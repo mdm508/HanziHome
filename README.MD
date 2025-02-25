@@ -11,13 +11,13 @@ Updates to keywords update this json file
 ## Demo
 
 **Demo GIF**  
-![Demo GIF](demo/demo.gif)
+![Demo GIF](https://raw.githubusercontent.com/mdm508/HanziHome/master/demo/demo.gif)
 
 **Table View**  
-![Table View](demo/table.png)
+![Table View](https://raw.githubusercontent.com/mdm508/HanziHome/master/demo/table.png)
 
 **Viewer Example**  
-![Viewer Example](demo/viewer.png)
+![Viewer Example](https://raw.githubusercontent.com/mdm508/HanziHome/master/demo/viewer.png)
 
 
 ## Table Setup
@@ -32,7 +32,6 @@ If you set it up correctly you will be able to use on Anki Mobile as well.
 HanziViewer is limited to addon however.
 
 ### Inside the Card Template Editor add divs to Make Table
-
 
 1. **Insert the div**: In the card template (Front/Back), add:
    ```html
@@ -54,8 +53,7 @@ When configured you will be abel so search for selected hanzi more quickly in
 the browser. I wanted this because I often need to prioritize subcomponents that I have
 forgotten.
 
-![Demo GIF](demo/search.gif)
-
+![Demo GIF](https://raw.githubusercontent.com/mdm508/HanziHome/master/demo/search.gif)
 
 ### Quick Search Setup
 Go to the config page for **Hanzi Home** and edit the config file to include
@@ -68,10 +66,9 @@ Restart anki and try a search.
 ## Current Limitations
 
 - **Traditional Focused**: Keywords and data focus on Traditional characters. You are probably still able to search and get information about
-simplified words, they will just lack keywords.
+  simplified words, they will just lack keywords.
 - **Zhuyin only**: The add-on displays phonetics in Zhuyin (Bopomofo). Pinyin support is not yet included.  
 - **Features evolve on demand**
 
 ## Issues or Suggestions
 Please open any issues or suggestions on [Github](https://github.com/mdm508/HanziHome)
-
