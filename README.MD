@@ -8,6 +8,8 @@ to help you manage information about Hanzi. This addon gives you a way too
 Information about characetrs stored in json file available on desktop and web.
 Updates to keywords update this json file
 
+[Download Hanzi Home From Anki Web](https://ankiweb.net/shared/info/888829?cb=1740451608932)
+
 ## Demo
 
 **Demo GIF**  
